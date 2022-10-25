@@ -2,7 +2,7 @@ import argparse
 
 
 def build_args():
-    parser = argparse.ArgumentParser(description="K-means")
+    parser = argparse.ArgumentParser(description="EEG")
     parser.add_argument("--data", type=str, default='IV-I')
     parser.add_argument("--id", type=str, default='d')
     parser.add_argument("--model", type=str, default='svm')
