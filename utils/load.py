@@ -25,7 +25,7 @@ def load_eeg_data(args):
             x.append(EEG[:, win + onset])
             y.append(cl_lab.index(cl))
     x = np.concatenate([x], axis=0)
-    y = np.array(y).astype(float)
+    y = np.array(y).astype(int)
     assert x.shape[0] == y.shape[0]
     # Print some information
     if args.verbose:

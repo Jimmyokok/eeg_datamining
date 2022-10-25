@@ -1,6 +1,7 @@
 import scipy.signal
 import numpy as np
 from numpy import linalg
+from sklearn.preprocessing import StandardScaler
 
 
 def bandpass(trials, args):
@@ -54,5 +55,9 @@ def csp_transform(x, y, x_test, y_test, args):
     x_test_filt = bandpass(x_test, args)
     csp = CSP()
     csp.fit(x_filt, y)
-    return logvar(csp.predict(x_filt)[:, [0, -1], :]), y, logvar(csp.predict(x_test_filt)[:, [0, -1], :]), y_test
-
+    x_train = logvar(csp.predict(x_filt)[:, [0, -1], :])
+    x_test = logvar(csp.predict(x_test_filt)[:, [0, -1], :])
+    ss = StandardScaler()
+    x_train = ss.fit_transform(x_train)
+    x_test = ss.transform(x_test)
+    return x_train, y, x_test, y_test

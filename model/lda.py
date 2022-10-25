@@ -2,7 +2,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 
 class LDA(object):
-    def __init__(self):
+    def __init__(self, args):
         super(LDA, self).__init__()
         self.trained = False
 

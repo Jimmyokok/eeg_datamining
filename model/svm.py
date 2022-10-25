@@ -3,7 +3,7 @@ from sklearn.model_selection import GridSearchCV
 
 
 class SVM(object):
-    def __init__(self):
+    def __init__(self, args):
         super(SVM, self).__init__()
         self.trained = False
 

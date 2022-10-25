@@ -6,9 +6,9 @@ from model.lda import LDA
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from utils.utils import evaluate_using_tsne
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.preprocessing import StandardScaler
 import numpy as np
 import random
+import torch
 from tqdm import tqdm
 
 
@@ -17,6 +17,7 @@ def main(args):
     if args.verbose:
         print('Loading dataset {}.{}'.format(args.data, args.id))
     x, y = load_eeg_data(args)
+    args.nchannels = 2
     accs = []
     f1s = []
     if args.model == 'svm':
@@ -35,14 +36,9 @@ def main(args):
             x_train, x_test = x[train_index], x[test_index]
             y_train, y_test = y[train_index], y[test_index]
             x_train, y_train, x_test, y_test = csp_transform(x_train, y_train, x_test, y_test, args)
-            ss = StandardScaler()
-            x_train = ss.fit_transform(x_train)
-            x_test = ss.transform(x_test)
-            # evaluate_using_tsne(x_train, y_train)
-            # evaluate_using_tsne(x_test, y_test)
-            svm = model()
-            svm.fit(x_train, y_train)
-            y_pred = svm.predict(x_test)
+            m = model(args)
+            m.fit(x_train, y_train)
+            y_pred = m.predict(x_test)
             accs.append(accuracy_score(y_test, y_pred))
             f1s.append(f1_score(y_test, y_pred))
         print('Final result: accuracy {}, f1 {}'.format(np.mean(accs), np.mean(f1s)))
@@ -52,9 +48,9 @@ def main(args):
             seed = random.randint(0, 65536)
             x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=args.ratio, shuffle=True, random_state=seed)
             x_train, y_train, x_test, y_test = csp_transform(x_train, y_train, x_test, y_test, args)
-            svm = SVM()
-            svm.fit(x_train, y_train)
-            y_pred = svm.predict(x_test)
+            m = model(args)
+            m.fit(x_train, y_train)
+            y_pred = m.predict(x_test)
             accs.append(accuracy_score(y_test, y_pred))
             f1s.append(f1_score(y_test, y_pred))
         print('Final result: accuracy {}, f1 {}'.format(np.max(accs), np.max(f1s)))
